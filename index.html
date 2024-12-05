@@ -902,15 +902,17 @@
                         <i class="${getSetIcon(setName)}"></i>
                         <h3>${setName}</h3>
                         <p id="progress-${setName}">${totalReviewed}/${totalCards} tarjetas revisadas</p>
-                        <button onclick="selectSet('${setName}')"><i class="fas fa-book-open"></i> Estudiar</button>
-                        <button onclick="selectReviewLevel('${setName}')"><i class="fas fa-search"></i> Revisar Clasificadas</button>
+                        <div class="button-group">
+                            <button onclick="selectSet('${setName}')"><i class="fas fa-book-open"></i> Estudiar</button>
+                            <button onclick="selectReviewLevel('${setName}')"><i class="fas fa-search"></i> Revisar Clasificadas</button>
+                        </div>
                     `;
                     setList.appendChild(card);
                 }
             }
         }
 
-       // Función para obtener el ícono de un conjunto
+        // Función para obtener el ícono de un conjunto
 function getSetIcon(setName) {
     const icons = {
         'Anatomía': 'fas fa-bone',
@@ -972,6 +974,8 @@ function getSetIcon(setName) {
         let flashcards = [];
         let currentCardIndex = 0;
         let currentFace = 0; // 0: Pregunta, 1: Respuesta, 2: Explicación
+
+        // Variables para el manejo táctil
         let touchStartY = 0;
         let touchEndY = 0;
         let touchStartX = 0;
@@ -1098,8 +1102,8 @@ function getSetIcon(setName) {
             flashcard.addEventListener('touchmove', handleTouchMove, false);
             flashcard.addEventListener('touchend', handleTouchEnd, false);
 
-            // Añadir evento de clic para cambiar de cara
-            flashcard.addEventListener('click', () => flipCard('next'));
+            // Añadir evento de clic para cuadrantes
+            flashcard.addEventListener('click', handleFlashcardClick);
 
             return flashcard;
         }
@@ -1123,6 +1127,41 @@ function getSetIcon(setName) {
                     localStorage.setItem('profiles', JSON.stringify(profiles));
                 }
                 updateProfileUI();
+            }
+        }
+
+        // Función para manejar clics en la flashcard dividida en cuadrantes
+        function handleFlashcardClick(event) {
+            let flashcard = event.currentTarget;
+            let rect = flashcard.getBoundingClientRect();
+            let x = event.clientX - rect.left; // posición X relativa al flashcard
+            let y = event.clientY - rect.top;  // posición Y relativa al flashcard
+
+            let width = rect.width;
+            let height = rect.height;
+
+            // Calcular en qué cuadrante se hizo clic
+            let col = Math.floor((x / width) * 3);
+            let row = Math.floor((y / height) * 3);
+
+            if (row === 1 && col === 1) {
+                // Cuadrante central - Cambiar a la siguiente cara
+                flipCard('next');
+            } else if (col === 0) {
+                // Columna izquierda - Flashcard anterior
+                changeCard('prev');
+            } else if (col === 2) {
+                // Columna derecha - Flashcard siguiente
+                changeCard('next');
+            } else if (row === 0) {
+                // Fila superior - Cambiar a la cara anterior
+                flipCard('prev');
+            } else if (row === 2) {
+                // Fila inferior - Cambiar a la siguiente cara
+                flipCard('next');
+            } else {
+                // Si se desea, manejar los cuadrantes restantes
+                flipCard('next');
             }
         }
 
@@ -1206,16 +1245,16 @@ function getSetIcon(setName) {
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 // Movimiento horizontal
                 if (deltaX > 50) {
-                    flipCard('prev');
+                    changeCard('prev');
                 } else if (deltaX < -50) {
-                    flipCard('next');
+                    changeCard('next');
                 }
             } else {
                 // Movimiento vertical
                 if (deltaY > 50) {
-                    changeCard('prev');
+                    flipCard('prev');
                 } else if (deltaY < -50) {
-                    changeCard('next');
+                    flipCard('next');
                 }
             }
         }
