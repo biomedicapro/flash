@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flashcards Médicas Personalizadas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Iconos de Material Design -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Estilos generales */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #004080;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            background-color: #0066cc;
+        }
+        nav button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        nav button.active {
+            background-color: #005bb5;
+        }
+        .container {
+            padding: 20px;
+        }
+        /* Estilos para mosaico de archivos CSV */
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .file-grid div {
+            background-color: #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        /* Estilos para flashcards */
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        .flashcard-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flashcard:hover .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .flashcard-face.back {
+            transform: rotateY(180deg);
+        }
+        /* Estilos para el formulario de creación de flashcards */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        /* Estilos responsivos */
+        @media (max-width: 600px) {
+            nav button {
+                font-size: 14px;
+            }
+            .flashcard {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Flashcards Médicas Personalizadas</h1>
+    </header>
+
+    <nav>
+        <button id="btn-estudio" class="active">Estudiar</button>
+        <button id="btn-personalizar">Personalizar</button>
+    </nav>
+
+    <div class="container" id="estudio-section">
+        <!-- Mosaico de archivos CSV -->
+        <h2>Selecciona un set de flashcards</h2>
+        <div class="file-grid" id="file-grid">
+            <!-- Archivos CSV disponibles -->
+        </div>
+    </div>
+
+    <div class="container" id="personalizar-section" style="display: none;">
+        <!-- Formulario de creación de flashcards -->
+        <h2>Crear Flashcards</h2>
+        <div id="perfil-section">
+            <!-- Sección de creación de perfil -->
+            <p>Para crear flashcards, por favor ingresa la contraseña:</p>
+            <input type="password" id="password-input" placeholder="Contraseña">
+            <button id="btn-verificar">Verificar</button>
+        </div>
+        <div id="crear-flashcards" style="display: none;">
+            <form id="flashcard-form">
+                <div class="form-group">
+                    <label for="pregunta">Pregunta:</label>
+                    <textarea id="pregunta" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="respuesta">Respuesta:</label>
+                    <textarea id="respuesta" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="explicacion">Explicación:</label>
+                    <textarea id="explicacion"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <select id="categoria">
+                        <option value="Fácil">Fácil</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Difícil">Difícil</option>
+                    </select>
+                </div>
+                <button type="submit">Guardar Flashcard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // Variables globales
+        let flashcards = [];
+        let currentIndex = 0;
+        let currentFace = 0;
+        const password = "20231610";
+        let perfiles = JSON.parse(localStorage.getItem('perfiles')) || {};
+
+        // Manejo de navegación
+        document.getElementById('btn-estudio').addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('btn-personalizar').classList.remove('active');
+            document.getElementById('estudio-section').style.display = 'block';
+            document.getElementById('personalizar-section').style.display = 'none';
+        });
+
+        document.getElementById('btn-personalizar').addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('btn-estudio').classList.remove('active');
+            document.getElementById('personalizar-section').style.display = 'block';
+            document.getElementById('estudio-section').style.display = 'none';
+        });
+
+        // Verificar contraseña para crear perfil
+        document.getElementById('btn-verificar').addEventListener('click', function() {
+            const inputPassword = document.getElementById('password-input').value;
+            if (inputPassword === password) {
+                document.getElementById('perfil-section').style.display = 'none';
+                document.getElementById('crear-flashcards').style.display = 'block';
+            } else {
+                alert('Contraseña incorrecta.');
+            }
+        });
+
+        // Manejo del formulario de creación de flashcards
+        document.getElementById('flashcard-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuevaFlashcard = {
+                pregunta: document.getElementById('pregunta').value,
+                respuesta: document.getElementById('respuesta').value,
+                explicacion: document.getElementById('explicacion').value,
+                categoria: document.getElementById('categoria').value
+            };
+            flashcards.push(nuevaFlashcard);
+            localStorage.setItem('flashcards', JSON.stringify(flashcards));
+            alert('Flashcard guardada exitosamente.');
+            this.reset();
+        });
+
+        // Cargar archivos CSV disponibles (simulado)
+        function cargarArchivosCSV() {
+            const archivos = ['Anatomía.csv', 'Fisiología.csv', 'Bioquímica.csv'];
+            const fileGrid = document.getElementById('file-grid');
+            archivos.forEach(archivo => {
+                const div = document.createElement('div');
+                div.textContent = archivo;
+                div.addEventListener('click', () => {
+                    alert('Cargando ' + archivo);
+                    // Aquí se cargarían las flashcards del archivo seleccionado
+                });
+                fileGrid.appendChild(div);
+            });
+        }
+
+        cargarArchivosCSV();
+
+        // Navegación de flashcards (simulada)
+        function mostrarFlashcard(index) {
+            // Código para mostrar la flashcard actual
+        }
+
+        // Guardar y cargar progreso del usuario
+        function guardarProgreso() {
+            localStorage.setItem('progreso', JSON.stringify({
+                currentIndex: currentIndex,
+                flashcards: flashcards
+            }));
+        }
+
+        function cargarProgreso() {
+            const progreso = JSON.parse(localStorage.getItem('progreso'));
+            if (progreso) {
+                currentIndex = progreso.currentIndex;
+                flashcards = progreso.flashcards;
+                mostrarFlashcard(currentIndex);
+            }
+        }
+
+        cargarProgreso();
+    </script>
+</body>
+</html>
