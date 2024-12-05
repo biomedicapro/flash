@@ -17,7 +17,7 @@
             font-family: 'Roboto', sans-serif;
             background-color: #f0f4f8;
             color: #333;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         /* Estilos del header */
         header {
@@ -205,6 +205,9 @@
             flex-wrap: wrap;
             gap: 30px;
             justify-content: center;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            padding-bottom: 20px;
         }
         .set-card {
             background-color: #fff;
@@ -214,6 +217,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
+            flex-shrink: 0;
         }
         .set-card:hover {
             transform: translateY(-5px);
@@ -483,7 +487,7 @@
         /* Estilos para modo nocturno */
         body.night-mode {
             background-color: #1D1F21;
-            color: #C5C8C6;
+            color: #fff;
         }
         body.night-mode header {
             background: linear-gradient(135deg, #2C3E50, #1D1F21);
@@ -495,7 +499,7 @@
         body.night-mode .profile-card,
         body.night-mode .set-card {
             background-color: #2C3E50;
-            color: #ECF0F1;
+            color: #fff;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         body.night-mode .profile-card:hover,
@@ -523,11 +527,11 @@
             box-shadow: 0 8px 15px rgba(0,0,0,0.4);
         }
         body.night-mode .card h2 {
-            color: #ECF0F1;
+            color: #fff;
         }
         body.night-mode .face-indicator {
             background-color: rgba(44,62,80,0.8);
-            color: #ECF0F1;
+            color: #fff;
         }
         body.night-mode .front {
             background-color: #34495E;
@@ -569,11 +573,27 @@
         body.night-mode .classification .hard:hover {
             background-color: #A93226;
         }
+        body.night-mode .login-screen h2,
+        body.night-mode .create-profile h3,
+        body.night-mode .main-section h3,
+        body.night-mode .review-level-section h3 {
+            color: #fff;
+        }
+        body.night-mode .create-profile input[type="password"] {
+            background-color: #34495E;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        body.night-mode .create-profile input[type="password"]::placeholder {
+            color: #ccc;
+        }
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
             .profile-list, .set-list {
                 flex-direction: column;
                 align-items: center;
+                max-height: none;
+                overflow-y: visible;
             }
             .profile-card, .set-card {
                 width: 90%;
