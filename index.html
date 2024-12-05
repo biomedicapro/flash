@@ -102,8 +102,14 @@
         .login-screen h2 {
             font-size: 24px;
             font-weight: 500;
-            margin-bottom: 30px;
-            color: #2C3E50;
+            margin-bottom: 20px;
+        }
+        .app-description {
+            font-size: 18px;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
         }
         .profile-list {
             display: flex;
@@ -177,6 +183,18 @@
         }
         .create-profile button:hover {
             background-color: #2980B9;
+        }
+        /* Estilos del pie de página */
+        footer {
+            background-color: #2C3E50;
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+        footer p {
+            margin: 0;
+            font-size: 16px;
         }
         /* Estilos de la sección principal */
         .main-section {
@@ -399,7 +417,7 @@
         /* Clasificación */
         .classification {
             position: absolute;
-            bottom: 25px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -578,9 +596,11 @@
             background-color: #A93226;
         }
         body.night-mode .login-screen h2,
+        body.night-mode .app-description,
         body.night-mode .create-profile h3,
         body.night-mode .main-section h3,
-        body.night-mode .review-level-section h3 {
+        body.night-mode .review-level-section h3,
+        body.night-mode footer {
             color: #fff;
         }
         body.night-mode .create-profile input[type="password"] {
@@ -590,6 +610,12 @@
         }
         body.night-mode .create-profile input[type="password"]::placeholder {
             color: #ccc;
+        }
+        body.night-mode .app-description {
+            color: #ccc;
+        }
+        body.night-mode footer {
+            background-color: #2C3E50;
         }
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
@@ -608,6 +634,7 @@
             }
             .classification {
                 flex-direction: column;
+                bottom: 80px;
             }
             .notification-container {
                 top: auto;
@@ -635,7 +662,8 @@
 
     <!-- Pantalla de inicio de sesión -->
     <div class="section login-screen active" id="login-screen">
-        <h2>Selecciona tu perfil</h2>
+        <h2>Bienvenido a Flashcards Médicas</h2>
+        <p class="app-description">Tu herramienta personalizada para el estudio y repaso de temas médicos. Crea tu perfil, selecciona un conjunto y comienza a aprender de manera interactiva.</p>
         <div class="profile-list" id="profile-list">
             <!-- Perfiles existentes se cargarán aquí -->
         </div>
@@ -685,6 +713,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>© 2023 Flashcards Médicas Personalizadas</p>
+    </footer>
 
     <script>
         // Variables globales
@@ -755,8 +788,7 @@
         {question: '¿Qué significa "HTTP"?', answer: 'Hypertext Transfer Protocol.', explanation: 'Es el protocolo usado para la comunicación en la web.'},
         {question: '¿Qué es la nube informática?', answer: 'Almacenamiento y acceso a datos en internet.', explanation: 'Ejemplos: Google Drive, Dropbox.'}
     ]
-}
-;
+};
 
         // Función para mostrar perfiles existentes
         function loadProfiles() {
@@ -1147,20 +1179,20 @@ function getSetIcon(setName) {
             if (row === 1 && col === 1) {
                 // Cuadrante central - Cambiar a la siguiente cara
                 flipCard('next');
-            } else if (col === 0) {
-                // Columna izquierda - Flashcard anterior
-                changeCard('prev');
-            } else if (col === 2) {
-                // Columna derecha - Flashcard siguiente
-                changeCard('next');
-            } else if (row === 0) {
-                // Fila superior - Cambiar a la cara anterior
+            } else if (row === 1 && col === 0) {
+                // Fila central, columna izquierda - Cambiar a la cara anterior
                 flipCard('prev');
-            } else if (row === 2) {
-                // Fila inferior - Cambiar a la siguiente cara
+            } else if (row === 1 && col === 2) {
+                // Fila central, columna derecha - Cambiar a la siguiente cara
                 flipCard('next');
+            } else if (row === 0) {
+                // Fila superior - Flashcard anterior
+                changeCard('prev');
+            } else if (row === 2) {
+                // Fila inferior - Flashcard siguiente
+                changeCard('next');
             } else {
-                // Si se desea, manejar los cuadrantes restantes
+                // Otros cuadrantes - Por defecto, cambiar a la siguiente cara
                 flipCard('next');
             }
         }
@@ -1245,16 +1277,16 @@ function getSetIcon(setName) {
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 // Movimiento horizontal
                 if (deltaX > 50) {
-                    changeCard('prev');
+                    flipCard('prev');
                 } else if (deltaX < -50) {
-                    changeCard('next');
+                    flipCard('next');
                 }
             } else {
                 // Movimiento vertical
                 if (deltaY > 50) {
-                    flipCard('prev');
+                    changeCard('prev');
                 } else if (deltaY < -50) {
-                    flipCard('next');
+                    changeCard('next');
                 }
             }
         }
