@@ -8,54 +8,84 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- Incluir Font Awesome para íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Incluir Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
     <style>
         /* Estilos generales */
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f0f4f8;
             color: #333;
             overflow: hidden;
         }
+        /* Estilos del header */
         header {
-            background-color: #5DADE2;
+            background: linear-gradient(135deg, #5DADE2, #1ABC9C);
             color: #fff;
             padding: 15px;
             text-align: center;
             position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: headerBubble 6s infinite ease-in-out;
+        }
+        @keyframes headerBubble {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
         }
         header h1 {
             margin: 0;
-            font-size: 24px;
-            font-weight: normal;
+            font-size: 28px;
+            font-weight: 500;
+            z-index: 1;
         }
-        .back-button, .theme-toggle-button, .fullscreen-button, .logout-button {
+        .header-buttons {
             position: absolute;
             top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1;
+        }
+        .header-button {
             background: none;
             border: none;
             color: #fff;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
+            position: relative;
+        }
+        .header-button i {
+            margin: 0;
         }
         .back-button {
+            position: absolute;
+            top: 15px;
             left: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1;
         }
-        .logout-button {
-            right: 15px;
-        }
-        .theme-toggle-button {
-            right: 50px;
-        }
-        .fullscreen-button {
-            right: 85px;
-        }
-        .back-button i, .theme-toggle-button i, .fullscreen-button i, .logout-button i {
-            margin-right: 5px;
+        .back-button i {
+            margin: 0;
         }
         /* Secciones */
         .section {
@@ -66,180 +96,222 @@
         }
         /* Estilos del inicio de sesión */
         .login-screen {
-            padding: 20px;
+            padding: 40px 20px;
             text-align: center;
+        }
+        .login-screen h2 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            color: #2C3E50;
         }
         .profile-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
             margin-top: 20px;
         }
         .profile-card {
             background-color: #fff;
-            border-radius: 10px;
-            width: 150px;
-            padding: 20px;
+            border-radius: 15px;
+            width: 180px;
+            padding: 30px 20px;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
         }
         .profile-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         .profile-card i {
-            font-size: 50px;
+            font-size: 60px;
             color: #3498DB;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .profile-card h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 500;
             color: #2C3E50;
         }
         .delete-profile {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 10px;
+            right: 10px;
             background: none;
             border: none;
             color: #E74C3C;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
         }
         .create-profile {
-            margin-top: 20px;
+            margin-top: 40px;
+        }
+        .create-profile h3 {
+            font-size: 22px;
+            font-weight: 500;
+            color: #2C3E50;
+            margin-bottom: 15px;
         }
         .create-profile input[type="password"] {
-            padding: 10px;
-            width: 200px;
+            padding: 12px;
+            width: 250px;
             margin-right: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
         }
         .create-profile button {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background-color: #3498DB;
             color: #fff;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
         .create-profile button:hover {
             background-color: #2980B9;
         }
         /* Estilos de la sección principal */
         .main-section {
-            padding: 20px;
+            padding: 40px 20px;
         }
         .profile-info {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+            gap: 20px;
         }
         .profile-info i {
-            font-size: 60px;
+            font-size: 80px;
             color: #3498DB;
-            margin-right: 15px;
         }
         .profile-info h2 {
             margin: 0;
-            font-weight: normal;
+            font-weight: 500;
+            font-size: 28px;
             color: #2C3E50;
         }
         /* Estilos de la lista de conjuntos */
         .set-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 30px;
             justify-content: center;
         }
         .set-card {
             background-color: #fff;
-            border-radius: 10px;
-            width: 200px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border-radius: 15px;
+            width: 220px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
         }
         .set-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         .set-card i {
-            font-size: 40px;
+            font-size: 50px;
             color: #3498DB;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .set-card h3 {
             margin: 0;
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 500;
             color: #2C3E50;
+            margin-bottom: 10px;
         }
         .set-card p {
             margin: 5px 0;
             color: #7F8C8D;
+            font-size: 16px;
         }
         .set-card button {
-            margin-top: 10px;
-            padding: 8px 12px;
+            margin-top: 15px;
+            padding: 10px 15px;
             background-color: #5DADE2;
             color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             display: flex;
             align-items: center;
+            transition: background-color 0.3s;
+        }
+        .set-card button:hover {
+            background-color: #3498DB;
         }
         .set-card button i {
-            margin-right: 5px;
+            margin-right: 8px;
         }
         .set-card button + button {
             margin-left: 10px;
             background-color: #1ABC9C;
         }
+        .set-card button + button:hover {
+            background-color: #16A085;
+        }
         /* Botones de clasificación */
         .classification-options {
-            margin-top: 20px;
+            margin-top: 40px;
             display: flex;
-            gap: 10px;
+            gap: 20px;
             justify-content: center;
         }
         .classification-options button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: 500;
             display: flex;
             align-items: center;
+            transition: background-color 0.3s;
         }
         .classification-options button i {
-            margin-right: 8px;
+            margin-right: 10px;
         }
         .classification-options .easy {
             background-color: #2ECC71;
         }
+        .classification-options .easy:hover {
+            background-color: #27AE60;
+        }
         .classification-options .medium {
             background-color: #F1C40F;
+        }
+        .classification-options .medium:hover {
+            background-color: #D4AC0D;
         }
         .classification-options .hard {
             background-color: #E74C3C;
         }
+        .classification-options .hard:hover {
+            background-color: #C0392B;
+        }
         /* Estilos de la sección de flashcards */
         .flashcard-section {
             position: relative;
-            height: calc(100vh - 70px);
+            height: calc(100vh - 80px);
             overflow: hidden;
         }
         .progress-bar {
             width: 100%;
             background-color: #e0e0e0;
-            height: 10px;
+            height: 8px;
             position: absolute;
             top: 0;
             left: 0;
@@ -249,6 +321,7 @@
             width: 0%;
             height: 100%;
             background-color: #5DADE2;
+            transition: width 0.3s;
         }
         /* Contenedor para pantalla completa */
         .flashcard-fullscreen-container {
@@ -269,8 +342,9 @@
             padding: 0;
         }
         .flashcard {
-            width: 95vw;
-            height: 80vh;
+            width: 90vw;
+            height: 75vh;
+            max-width: 800px;
             max-height: 600px;
             position: relative;
             perspective: 1000px;
@@ -283,11 +357,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 30px;
             box-sizing: border-box;
             background: linear-gradient(to bottom, #fff, #f0f0f0);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
             opacity: 0;
             z-index: 0;
             transition: opacity 0.4s ease;
@@ -299,9 +373,10 @@
         }
         .card h2 {
             margin: 0;
-            font-size: 2em;
+            font-size: 28px;
             color: #2C3E50;
             text-align: center;
+            line-height: 1.4;
         }
         .front {
             background-color: #3498DB;
@@ -318,56 +393,67 @@
         /* Clasificación */
         .classification {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             z-index: 2;
         }
         .classification button {
-            padding: 12px 20px;
+            padding: 14px 22px;
             border: none;
-            border-radius: 50px;
+            border-radius: 25px;
             cursor: pointer;
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: 500;
             display: flex;
             align-items: center;
+            transition: background-color 0.3s;
         }
         .classification button i {
-            margin-right: 8px;
+            margin-right: 10px;
         }
-        .easy {
+        .classification .easy {
             background-color: #2ECC71;
         }
-        .medium {
+        .classification .easy:hover {
+            background-color: #27AE60;
+        }
+        .classification .medium {
             background-color: #F1C40F;
         }
-        .hard {
+        .classification .medium:hover {
+            background-color: #D4AC0D;
+        }
+        .classification .hard {
             background-color: #E74C3C;
+        }
+        .classification .hard:hover {
+            background-color: #C0392B;
         }
         /* Indicador de cara */
         .face-indicator {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(0,0,0,0.5);
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0,0,0,0.6);
             color: #fff;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             z-index: 2;
         }
         .face-indicator i {
-            margin-right: 5px;
+            margin-right: 8px;
         }
         /* Contenedor de notificaciones */
         .notification-container {
             position: fixed;
-            top: 80px;
+            top: 90px;
             right: 20px;
             z-index: 9999;
             display: flex;
@@ -379,8 +465,8 @@
             color: #fff;
             padding: 15px 20px;
             margin-top: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             opacity: 0;
@@ -392,21 +478,29 @@
             transition: all 0.5s ease;
         }
         .notification i {
-            margin-right: 10px;
+            margin-right: 12px;
         }
         /* Estilos para modo nocturno */
         body.night-mode {
-            background-color: #2C3E50;
-            color: #ECF0F1;
+            background-color: #1D1F21;
+            color: #C5C8C6;
         }
         body.night-mode header {
-            background-color: #34495E;
+            background: linear-gradient(135deg, #2C3E50, #1D1F21);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        body.night-mode header::after {
+            background: rgba(255,255,255,0.05);
         }
         body.night-mode .profile-card,
         body.night-mode .set-card {
-            background-color: #34495E;
+            background-color: #2C3E50;
             color: #ECF0F1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        body.night-mode .profile-card:hover,
+        body.night-mode .set-card:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
         }
         body.night-mode .profile-card i,
         body.night-mode .set-card i {
@@ -415,35 +509,65 @@
         body.night-mode .set-card button {
             background-color: #1ABC9C;
         }
+        body.night-mode .set-card button:hover {
+            background-color: #16A085;
+        }
         body.night-mode .set-card button + button {
             background-color: #E67E22;
         }
+        body.night-mode .set-card button + button:hover {
+            background-color: #D35400;
+        }
         body.night-mode .card {
-            background: linear-gradient(to bottom, #34495E, #2C3E50);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+            background: linear-gradient(to bottom, #2C3E50, #1D1F21);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
         }
         body.night-mode .card h2 {
             color: #ECF0F1;
         }
         body.night-mode .face-indicator {
-            background-color: rgba(236,240,241,0.5);
-            color: #2C3E50;
+            background-color: rgba(44,62,80,0.8);
+            color: #ECF0F1;
         }
         body.night-mode .front {
-            background-color: #2C3E50;
+            background-color: #34495E;
         }
         body.night-mode .back {
-            background-color: #1ABC9C;
+            background-color: #27AE60;
         }
         body.night-mode .explanation {
             background-color: #8E44AD;
         }
         body.night-mode .notification {
-            background-color: #1ABC9C;
+            background-color: #27AE60;
         }
         body.night-mode .classification-options button,
         body.night-mode .classification button {
             color: #fff;
+        }
+        body.night-mode .classification-options .easy,
+        body.night-mode .classification .easy {
+            background-color: #27AE60;
+        }
+        body.night-mode .classification-options .easy:hover,
+        body.night-mode .classification .easy:hover {
+            background-color: #229954;
+        }
+        body.night-mode .classification-options .medium,
+        body.night-mode .classification .medium {
+            background-color: #D4AC0D;
+        }
+        body.night-mode .classification-options .medium:hover,
+        body.night-mode .classification .medium:hover {
+            background-color: #B7950B;
+        }
+        body.night-mode .classification-options .hard,
+        body.night-mode .classification .hard {
+            background-color: #C0392B;
+        }
+        body.night-mode .classification-options .hard:hover,
+        body.night-mode .classification .hard:hover {
+            background-color: #A93226;
         }
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
@@ -452,14 +576,14 @@
                 align-items: center;
             }
             .profile-card, .set-card {
-                width: 80%;
+                width: 90%;
             }
             .flashcard {
                 width: 100%;
                 height: 100%;
             }
             .card h2 {
-                font-size: 1.5em;
+                font-size: 24px;
             }
             .classification {
                 flex-direction: column;
@@ -476,11 +600,13 @@
 </head>
 <body>
     <header>
-        <button class="back-button" onclick="goBack()" style="display: none;"><i class="fas fa-arrow-left"></i> Volver</button>
-        <h1><i class="fas fa-book-medical"></i> Flashcards Médicas Personalizadas</h1>
-        <button class="fullscreen-button" onclick="toggleFullScreen()" style="display: none;"><i class="fas fa-expand"></i></button>
-        <button class="theme-toggle-button" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-        <button class="logout-button" id="logout-button" style="display: none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        <button class="back-button" onclick="goBack()" style="display: none;"><i class="fas fa-arrow-left"></i></button>
+        <h1><i class="fas fa-book-medical"></i> Flashcards Médicas</h1>
+        <div class="header-buttons">
+            <button class="header-button theme-toggle-button" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <button class="header-button fullscreen-button" onclick="toggleFullScreen()" style="display: none;"><i class="fas fa-expand"></i></button>
+            <button class="header-button logout-button" id="logout-button" style="display: none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
     </header>
 
     <!-- Contenedor de notificaciones -->
@@ -548,26 +674,68 @@
 
         // Datos de flashcards integrados
         let flashcardSets = {
-            'Anatomía': [
-                {question: '¿Qué hueso conecta el hombro con el codo?', answer: 'El húmero.', explanation: 'Es un hueso largo del brazo.'},
-                {question: '¿Cuántas vértebras tiene la columna vertebral humana?', answer: '33 vértebras.', explanation: 'Divididas en cervicales, torácicas, lumbares, sacras y coccígeas.'},
-                // Añade más tarjetas hasta completar 10
-                {question: '¿Cuál es el hueso más grande del cuerpo humano?', answer: 'El fémur.', explanation: 'Es el hueso del muslo que conecta la cadera con la rodilla.'},
-                {question: '¿Dónde se encuentra el hioides?', answer: 'En el cuello.', explanation: 'Es un hueso pequeño en la base de la lengua.'},
-                {question: '¿Qué huesos forman el esqueleto axial?', answer: 'Cráneo, columna vertebral y caja torácica.', explanation: 'Soportan y protegen los órganos principales.'},
-                // ...
-            ],
-            'Fisiología': [
-                // Añade las flashcards correspondientes
-            ],
-            'Farmacología': [
-                // Añade las flashcards correspondientes
-            ],
-            'Microbiología': [
-                // Añade las flashcards correspondientes
-            ],
-            // Puedes agregar nuevos conjuntos aquí
-        };
+    'Anatomía': [
+        {question: '¿Qué hueso conecta el hombro con el codo?', answer: 'El húmero.', explanation: 'Es un hueso largo del brazo.'},
+        {question: '¿Cuántos lóbulos tiene el cerebro humano?', answer: 'Cuatro lóbulos.', explanation: 'Son: frontal, parietal, temporal y occipital.'},
+        {question: '¿Cuál es el órgano más grande del cuerpo humano?', answer: 'La piel.', explanation: 'Tiene una superficie aproximada de 2 metros cuadrados.'},
+        {question: '¿Qué tipo de articulación es la rodilla?', answer: 'Una articulación de bisagra.', explanation: 'Permite movimientos de flexión y extensión.'},
+        {question: '¿Dónde se encuentra el cúbito?', answer: 'En el antebrazo.', explanation: 'Es uno de los dos huesos que forman el antebrazo, junto con el radio.'},
+        {question: '¿Cuál es la función principal de los glóbulos rojos?', answer: 'Transportar oxígeno.', explanation: 'Llevan oxígeno a las células y eliminan dióxido de carbono.'},
+        {question: '¿Cuántos músculos tiene el cuerpo humano aproximadamente?', answer: 'Más de 600 músculos.', explanation: 'Incluyen músculos esqueléticos, lisos y cardíacos.'},
+        {question: '¿Qué órgano produce la bilis?', answer: 'El hígado.', explanation: 'La bilis ayuda en la digestión de grasas.'},
+        {question: '¿Dónde se encuentra el estribo?', answer: 'En el oído medio.', explanation: 'Es el hueso más pequeño del cuerpo humano.'},
+        {question: '¿Qué función tiene la médula espinal?', answer: 'Transmitir señales entre el cerebro y el cuerpo.', explanation: 'Es parte del sistema nervioso central.'}
+    ],
+    'Historia Universal': [
+        {question: '¿Quién fue el primer emperador romano?', answer: 'Augusto.', explanation: 'Fue el primer emperador tras la caída de la República Romana.'},
+        {question: '¿En qué año terminó la Segunda Guerra Mundial?', answer: '1945.', explanation: 'Terminó con la rendición de Alemania y Japón.'},
+        {question: '¿Qué civilización construyó las pirámides de Giza?', answer: 'Los egipcios.', explanation: 'Son monumentos funerarios de los faraones.'},
+        {question: '¿Quién pintó la Capilla Sixtina?', answer: 'Miguel Ángel.', explanation: 'La pintura del techo es una de sus obras más famosas.'},
+        {question: '¿Qué revolución marcó el inicio de la era industrial?', answer: 'La Revolución Industrial.', explanation: 'Comenzó en Inglaterra en el siglo XVIII.'},
+        {question: '¿Quién fue el líder de la independencia de India?', answer: 'Mahatma Gandhi.', explanation: 'Lideró movimientos pacíficos contra el dominio británico.'},
+        {question: '¿En qué año llegó Cristóbal Colón a América?', answer: '1492.', explanation: 'Fue un evento que marcó la historia global.'},
+        {question: '¿Qué imperio construyó la Gran Muralla China?', answer: 'El imperio Qin.', explanation: 'La muralla fue construida para protegerse de invasores.'},
+        {question: '¿Cuál fue el evento que inició la Primera Guerra Mundial?', answer: 'El asesinato del archiduque Francisco Fernando.', explanation: 'Este evento ocurrió en 1914.'},
+        {question: '¿Qué tratado puso fin a la Primera Guerra Mundial?', answer: 'El Tratado de Versalles.', explanation: 'Fue firmado en 1919.'}
+    ],
+    'Matemáticas': [
+        {question: '¿Qué es un número primo?', answer: 'Un número divisible solo por 1 y por sí mismo.', explanation: 'Ejemplos: 2, 3, 5, 7.'},
+        {question: '¿Cuál es el resultado de 7 x 8?', answer: '56.', explanation: 'Es una multiplicación básica.'},
+        {question: '¿Qué es el Teorema de Pitágoras?', answer: 'A² + B² = C².', explanation: 'Aplica en triángulos rectángulos.'},
+        {question: '¿Qué significa "π" en matemáticas?', answer: 'Es una constante que representa la relación entre la circunferencia y el diámetro.', explanation: 'Su valor es aproximadamente 3.1416.'},
+        {question: '¿Cuál es la derivada de x²?', answer: '2x.', explanation: 'Es una operación básica en cálculo diferencial.'},
+        {question: '¿Qué es un ángulo recto?', answer: 'Un ángulo de 90 grados.', explanation: 'Es un ángulo común en geometría.'},
+        {question: '¿Cuál es el valor de √64?', answer: '8.', explanation: 'Es la raíz cuadrada de 64.'},
+        {question: '¿Qué es una función lineal?', answer: 'Una función cuya gráfica es una línea recta.', explanation: 'Ejemplo: y = mx + b.'},
+        {question: '¿Cuál es el factorial de 5?', answer: '120.', explanation: 'Se calcula como 5x4x3x2x1.'},
+        {question: '¿Qué es una fracción impropia?', answer: 'Una fracción cuyo numerador es mayor que el denominador.', explanation: 'Ejemplo: 7/4.'}
+    ],
+    'Ciencias Naturales': [
+        {question: '¿Qué gas es esencial para la respiración?', answer: 'El oxígeno.', explanation: 'Es utilizado por las células para obtener energía.'},
+        {question: '¿Qué planeta es conocido como el planeta rojo?', answer: 'Marte.', explanation: 'Se debe a la presencia de óxido de hierro en su superficie.'},
+        {question: '¿Cuál es la fuente principal de energía en la Tierra?', answer: 'El Sol.', explanation: 'Proporciona luz y calor.'},
+        {question: '¿Qué estudia la botánica?', answer: 'Las plantas.', explanation: 'Es una rama de la biología.'},
+        {question: '¿Qué es el ciclo del agua?', answer: 'El movimiento continuo del agua en la Tierra.', explanation: 'Incluye evaporación, condensación y precipitación.'},
+        {question: '¿Qué órgano controla el cuerpo humano?', answer: 'El cerebro.', explanation: 'Es el centro del sistema nervioso.'},
+        {question: '¿Qué metal es líquido a temperatura ambiente?', answer: 'El mercurio.', explanation: 'Es el único metal líquido a temperatura ambiente.'},
+        {question: '¿Qué es la fotosíntesis?', answer: 'Un proceso por el cual las plantas convierten luz en energía.', explanation: 'Utilizan dióxido de carbono y agua.'},
+        {question: '¿Qué es un ecosistema?', answer: 'Una comunidad de seres vivos y su entorno.', explanation: 'Incluye factores bióticos y abióticos.'},
+        {question: '¿Cuál es el estado del agua a 100°C?', answer: 'Gaseoso.', explanation: 'A esta temperatura el agua hierve y se convierte en vapor.'}
+    ],
+    'Tecnología': [
+        {question: '¿Qué significa "HTML"?', answer: 'HyperText Markup Language.', explanation: 'Es el lenguaje estándar para crear páginas web.'},
+        {question: '¿Qué es un algoritmo?', answer: 'Un conjunto de pasos para resolver un problema.', explanation: 'Es fundamental en programación.'},
+        {question: '¿Qué significa "IoT"?', answer: 'Internet of Things.', explanation: 'Se refiere a dispositivos conectados a internet.'},
+        {question: '¿Qué es la inteligencia artificial?', answer: 'La simulación de procesos humanos por máquinas.', explanation: 'Incluye aprendizaje, razonamiento y autocorrección.'},
+        {question: '¿Qué es un sistema operativo?', answer: 'Software que gestiona el hardware y software de una computadora.', explanation: 'Ejemplos: Windows, macOS, Linux.'},
+        {question: '¿Qué significa "CSS"?', answer: 'Cascading Style Sheets.', explanation: 'Se utiliza para diseñar páginas web.'},
+        {question: '¿Qué es un lenguaje de programación?', answer: 'Un lenguaje que permite escribir instrucciones para computadoras.', explanation: 'Ejemplos: Python, Java, C++.'},
+        {question: '¿Qué es el Big Data?', answer: 'Conjunto de datos masivos y complejos.', explanation: 'Requieren tecnologías especiales para su análisis.'},
+        {question: '¿Qué significa "HTTP"?', answer: 'Hypertext Transfer Protocol.', explanation: 'Es el protocolo usado para la comunicación en la web.'},
+        {question: '¿Qué es la nube informática?', answer: 'Almacenamiento y acceso a datos en internet.', explanation: 'Ejemplos: Google Drive, Dropbox.'}
+    ]
+}
+;
 
         // Función para mostrar perfiles existentes
         function loadProfiles() {
@@ -721,17 +889,19 @@
             }
         }
 
-        // Función para obtener el ícono de un conjunto
-        function getSetIcon(setName) {
-            const icons = {
-                'Anatomía': 'fas fa-bone',
-                'Fisiología': 'fas fa-heartbeat',
-                'Farmacología': 'fas fa-pills',
-                'Microbiología': 'fas fa-virus',
-                // Añade más íconos si agregas nuevos conjuntos
-            };
-            return icons[setName] || 'fas fa-book';
-        }
+       // Función para obtener el ícono de un conjunto
+function getSetIcon(setName) {
+    const icons = {
+        'Anatomía': 'fas fa-bone',
+        'Historia Universal': 'fas fa-landmark',
+        'Matemáticas': 'fas fa-square-root-alt',
+        'Ciencias Naturales': 'fas fa-leaf',
+        'Tecnología': 'fas fa-laptop-code',
+        // Añade más íconos si agregas nuevos conjuntos
+    };
+    return icons[setName] || 'fas fa-book';
+}
+
 
         // Función para seleccionar un conjunto de flashcards
         let selectedSet = '';
