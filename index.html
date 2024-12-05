@@ -154,6 +154,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            justify-content: center;
         }
         .set-card {
             background-color: #fff;
@@ -265,11 +266,11 @@
             height: 100%;
             overflow: hidden;
             position: relative;
+            padding: 0;
         }
         .flashcard {
-            width: 90%;
-            max-width: 600px;
-            height: 80%;
+            width: 95vw;
+            height: 80vh;
             max-height: 600px;
             position: relative;
             perspective: 1000px;
@@ -363,10 +364,59 @@
         .face-indicator i {
             margin-right: 5px;
         }
+        /* Contenedor de notificaciones */
+        .notification-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .notification {
+            background-color: #3498DB;
+            color: #fff;
+            padding: 15px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s ease;
+        }
+        .notification i {
+            margin-right: 10px;
+        }
         /* Estilos para modo nocturno */
         body.night-mode {
             background-color: #2C3E50;
             color: #ECF0F1;
+        }
+        body.night-mode header {
+            background-color: #34495E;
+        }
+        body.night-mode .profile-card,
+        body.night-mode .set-card {
+            background-color: #34495E;
+            color: #ECF0F1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.7);
+        }
+        body.night-mode .profile-card i,
+        body.night-mode .set-card i {
+            color: #1ABC9C;
+        }
+        body.night-mode .set-card button {
+            background-color: #1ABC9C;
+        }
+        body.night-mode .set-card button + button {
+            background-color: #E67E22;
         }
         body.night-mode .card {
             background: linear-gradient(to bottom, #34495E, #2C3E50);
@@ -388,6 +438,13 @@
         body.night-mode .explanation {
             background-color: #8E44AD;
         }
+        body.night-mode .notification {
+            background-color: #1ABC9C;
+        }
+        body.night-mode .classification-options button,
+        body.night-mode .classification button {
+            color: #fff;
+        }
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
             .profile-list, .set-list {
@@ -407,6 +464,13 @@
             .classification {
                 flex-direction: column;
             }
+            .notification-container {
+                top: auto;
+                bottom: 20px;
+                right: 50%;
+                transform: translateX(50%);
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -415,9 +479,12 @@
         <button class="back-button" onclick="goBack()" style="display: none;"><i class="fas fa-arrow-left"></i> Volver</button>
         <h1><i class="fas fa-book-medical"></i> Flashcards Médicas Personalizadas</h1>
         <button class="fullscreen-button" onclick="toggleFullScreen()" style="display: none;"><i class="fas fa-expand"></i></button>
-        <button class="theme-toggle-button" onclick="toggleTheme()" style="display: none;"><i class="fas fa-moon"></i></button>
+        <button class="theme-toggle-button" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
         <button class="logout-button" id="logout-button" style="display: none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
     </header>
+
+    <!-- Contenedor de notificaciones -->
+    <div class="notification-container" id="notification-container"></div>
 
     <!-- Pantalla de inicio de sesión -->
     <div class="section login-screen active" id="login-screen">
@@ -531,8 +598,9 @@
                 localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
                 showSection('main-section');
                 updateProfileUI();
+                applyTheme();
             } else {
-                alert('Contraseña incorrecta.');
+                showNotification('Contraseña incorrecta.', 'error');
             }
         }
 
@@ -564,9 +632,10 @@
                     localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
                     showSection('main-section');
                     updateProfileUI();
+                    applyTheme();
                 }
             } else {
-                alert('Contraseña incorrecta.');
+                showNotification('Contraseña incorrecta.', 'error');
             }
         }
 
@@ -590,7 +659,7 @@
             if (sectionId === 'main-section') {
                 document.getElementById('logout-button').style.display = 'block';
                 document.querySelector('.back-button').style.display = 'none';
-                document.querySelector('.theme-toggle-button').style.display = 'none';
+                document.querySelector('.theme-toggle-button').style.display = 'block';
                 document.querySelector('.fullscreen-button').style.display = 'none';
             } else if (sectionId === 'flashcard-section') {
                 document.querySelector('.back-button').style.display = 'block';
@@ -599,13 +668,13 @@
                 document.getElementById('logout-button').style.display = 'none';
             } else if (sectionId === 'review-level-section') {
                 document.querySelector('.back-button').style.display = 'block';
-                document.querySelector('.theme-toggle-button').style.display = 'none';
+                document.querySelector('.theme-toggle-button').style.display = 'block';
                 document.querySelector('.fullscreen-button').style.display = 'none';
                 document.getElementById('logout-button').style.display = 'none';
             } else {
                 document.getElementById('logout-button').style.display = 'none';
                 document.querySelector('.back-button').style.display = 'none';
-                document.querySelector('.theme-toggle-button').style.display = 'none';
+                document.querySelector('.theme-toggle-button').style.display = 'block';
                 document.querySelector('.fullscreen-button').style.display = 'none';
             }
         }
@@ -685,6 +754,7 @@
                 selectedSet = setName;
                 document.getElementById('review-set-name').innerText = setName;
                 showSection('review-level-section');
+                applyTheme();
             }
         }
 
@@ -704,6 +774,7 @@
             currentProfile = null;
             showSection('login-screen');
             loadProfiles();
+            applyTheme();
         }
 
         // Funciones para la sección de flashcards
@@ -782,7 +853,7 @@
                 currentCardIndex = 0;
             }
             if (flashcards.length === 0) {
-                alert('No hay tarjetas para mostrar.');
+                showNotification('No hay tarjetas para mostrar.', 'error');
                 goBack();
                 return;
             }
@@ -926,7 +997,7 @@
             let cardKey = `${setName}-${originalIndex}-${currentProfile.username}`;
             classifications[cardKey] = level;
             localStorage.setItem('classifications', JSON.stringify(classifications));
-            alert(`Tarjeta clasificada como ${level}`);
+            showNotification(`Tarjeta clasificada como ${level}`, 'success');
         }
 
         // Manejo de eventos táctiles
@@ -985,6 +1056,31 @@
                 document.querySelector('.theme-toggle-button i').classList.remove('fa-sun');
                 document.querySelector('.theme-toggle-button i').classList.add('fa-moon');
             }
+        }
+
+        // Función para mostrar notificaciones personalizadas
+        function showNotification(message, type) {
+            let notificationContainer = document.getElementById('notification-container');
+            let notification = document.createElement('div');
+            notification.className = 'notification';
+            if (type === 'success') {
+                notification.style.backgroundColor = '#2ECC71';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#E74C3C';
+            }
+            notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            notificationContainer.appendChild(notification);
+            // Mostrar notificación
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            // Ocultar y eliminar notificación
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notificationContainer.removeChild(notification);
+                }, 500);
+            }, 3000);
         }
 
         // Función para regresar y limpiar el nivel de revisión
