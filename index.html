@@ -160,9 +160,9 @@
             border-radius: 10px;
             width: 200px;
             padding: 20px;
-            cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.2s;
+            position: relative;
         }
         .set-card:hover {
             transform: scale(1.05);
@@ -181,11 +181,31 @@
             margin: 5px 0;
             color: #7F8C8D;
         }
+        .set-card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #5DADE2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        .set-card button i {
+            margin-right: 5px;
+        }
+        .set-card button + button {
+            margin-left: 10px;
+            background-color: #1ABC9C;
+        }
         /* Botones de clasificación */
         .classification-options {
             margin-top: 20px;
             display: flex;
             gap: 10px;
+            justify-content: center;
         }
         .classification-options button {
             padding: 10px 15px;
@@ -210,8 +230,164 @@
             background-color: #E74C3C;
         }
         /* Estilos de la sección de flashcards */
-        /* (Los estilos de la sección de flashcards se mantendrán igual que en index2.html) */
-        /* ... (Añade aquí los estilos de la sección de flashcards) */
+        .flashcard-section {
+            position: relative;
+            height: calc(100vh - 70px);
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: #5DADE2;
+        }
+        /* Contenedor para pantalla completa */
+        .flashcard-fullscreen-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background-color: inherit;
+        }
+        /* Contenedor de flashcards */
+        .flashcard-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .flashcard {
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            max-height: 600px;
+            position: relative;
+            perspective: 1000px;
+        }
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, #fff, #f0f0f0);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        .card.visible {
+            opacity: 1;
+            z-index: 1;
+        }
+        .card h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #2C3E50;
+            text-align: center;
+        }
+        .front {
+            background-color: #3498DB;
+            color: #fff;
+        }
+        .back {
+            background-color: #2ECC71;
+            color: #fff;
+        }
+        .explanation {
+            background-color: #9B59B6;
+            color: #fff;
+        }
+        /* Clasificación */
+        .classification {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 2;
+        }
+        .classification button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .classification button i {
+            margin-right: 8px;
+        }
+        .easy {
+            background-color: #2ECC71;
+        }
+        .medium {
+            background-color: #F1C40F;
+        }
+        .hard {
+            background-color: #E74C3C;
+        }
+        /* Indicador de cara */
+        .face-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.5);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+        }
+        .face-indicator i {
+            margin-right: 5px;
+        }
+        /* Estilos para modo nocturno */
+        body.night-mode {
+            background-color: #2C3E50;
+            color: #ECF0F1;
+        }
+        body.night-mode .card {
+            background: linear-gradient(to bottom, #34495E, #2C3E50);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+        }
+        body.night-mode .card h2 {
+            color: #ECF0F1;
+        }
+        body.night-mode .face-indicator {
+            background-color: rgba(236,240,241,0.5);
+            color: #2C3E50;
+        }
+        body.night-mode .front {
+            background-color: #2C3E50;
+        }
+        body.night-mode .back {
+            background-color: #1ABC9C;
+        }
+        body.night-mode .explanation {
+            background-color: #8E44AD;
+        }
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
             .profile-list, .set-list {
@@ -220,6 +396,16 @@
             }
             .profile-card, .set-card {
                 width: 80%;
+            }
+            .flashcard {
+                width: 100%;
+                height: 100%;
+            }
+            .card h2 {
+                font-size: 1.5em;
+            }
+            .classification {
+                flex-direction: column;
             }
         }
     </style>
@@ -256,8 +442,11 @@
         <div class="set-list" id="set-list">
             <!-- Conjuntos de flashcards se cargarán dinámicamente -->
         </div>
-        <!-- Botón para revisar tarjetas clasificadas -->
-        <h3>Revisar tarjetas clasificadas</h3>
+    </div>
+
+    <!-- Sección para seleccionar nivel de revisión -->
+    <div class="section review-level-section" id="review-level-section">
+        <h3>Selecciona el nivel de tarjetas a revisar en <span id="review-set-name"></span></h3>
         <div class="classification-options">
             <button class="hard" onclick="reviewClassified('Difícil')"><i class="fas fa-frown"></i> Difíciles</button>
             <button class="medium" onclick="reviewClassified('Medio')"><i class="fas fa-meh"></i> Medias</button>
@@ -292,68 +481,26 @@
 
         // Datos de flashcards integrados
         let flashcardSets = {
-    'Anatomía': [
-        {question: '¿Qué hueso conecta el hombro con el codo?', answer: 'El húmero.', explanation: 'Es un hueso largo del brazo.'},
-        {question: '¿Cuántos lóbulos tiene el cerebro humano?', answer: 'Cuatro lóbulos.', explanation: 'Son: frontal, parietal, temporal y occipital.'},
-        {question: '¿Cuál es el órgano más grande del cuerpo humano?', answer: 'La piel.', explanation: 'Tiene una superficie aproximada de 2 metros cuadrados.'},
-        {question: '¿Qué tipo de articulación es la rodilla?', answer: 'Una articulación de bisagra.', explanation: 'Permite movimientos de flexión y extensión.'},
-        {question: '¿Dónde se encuentra el cúbito?', answer: 'En el antebrazo.', explanation: 'Es uno de los dos huesos que forman el antebrazo, junto con el radio.'},
-        {question: '¿Cuál es la función principal de los glóbulos rojos?', answer: 'Transportar oxígeno.', explanation: 'Llevan oxígeno a las células y eliminan dióxido de carbono.'},
-        {question: '¿Cuántos músculos tiene el cuerpo humano aproximadamente?', answer: 'Más de 600 músculos.', explanation: 'Incluyen músculos esqueléticos, lisos y cardíacos.'},
-        {question: '¿Qué órgano produce la bilis?', answer: 'El hígado.', explanation: 'La bilis ayuda en la digestión de grasas.'},
-        {question: '¿Dónde se encuentra el estribo?', answer: 'En el oído medio.', explanation: 'Es el hueso más pequeño del cuerpo humano.'},
-        {question: '¿Qué función tiene la médula espinal?', answer: 'Transmitir señales entre el cerebro y el cuerpo.', explanation: 'Es parte del sistema nervioso central.'}
-    ],
-    'Historia Universal': [
-        {question: '¿Quién fue el primer emperador romano?', answer: 'Augusto.', explanation: 'Fue el primer emperador tras la caída de la República Romana.'},
-        {question: '¿En qué año terminó la Segunda Guerra Mundial?', answer: '1945.', explanation: 'Terminó con la rendición de Alemania y Japón.'},
-        {question: '¿Qué civilización construyó las pirámides de Giza?', answer: 'Los egipcios.', explanation: 'Son monumentos funerarios de los faraones.'},
-        {question: '¿Quién pintó la Capilla Sixtina?', answer: 'Miguel Ángel.', explanation: 'La pintura del techo es una de sus obras más famosas.'},
-        {question: '¿Qué revolución marcó el inicio de la era industrial?', answer: 'La Revolución Industrial.', explanation: 'Comenzó en Inglaterra en el siglo XVIII.'},
-        {question: '¿Quién fue el líder de la independencia de India?', answer: 'Mahatma Gandhi.', explanation: 'Lideró movimientos pacíficos contra el dominio británico.'},
-        {question: '¿En qué año llegó Cristóbal Colón a América?', answer: '1492.', explanation: 'Fue un evento que marcó la historia global.'},
-        {question: '¿Qué imperio construyó la Gran Muralla China?', answer: 'El imperio Qin.', explanation: 'La muralla fue construida para protegerse de invasores.'},
-        {question: '¿Cuál fue el evento que inició la Primera Guerra Mundial?', answer: 'El asesinato del archiduque Francisco Fernando.', explanation: 'Este evento ocurrió en 1914.'},
-        {question: '¿Qué tratado puso fin a la Primera Guerra Mundial?', answer: 'El Tratado de Versalles.', explanation: 'Fue firmado en 1919.'}
-    ],
-    'Matemáticas': [
-        {question: '¿Qué es un número primo?', answer: 'Un número divisible solo por 1 y por sí mismo.', explanation: 'Ejemplos: 2, 3, 5, 7.'},
-        {question: '¿Cuál es el resultado de 7 x 8?', answer: '56.', explanation: 'Es una multiplicación básica.'},
-        {question: '¿Qué es el Teorema de Pitágoras?', answer: 'A² + B² = C².', explanation: 'Aplica en triángulos rectángulos.'},
-        {question: '¿Qué significa "π" en matemáticas?', answer: 'Es una constante que representa la relación entre la circunferencia y el diámetro.', explanation: 'Su valor es aproximadamente 3.1416.'},
-        {question: '¿Cuál es la derivada de x²?', answer: '2x.', explanation: 'Es una operación básica en cálculo diferencial.'},
-        {question: '¿Qué es un ángulo recto?', answer: 'Un ángulo de 90 grados.', explanation: 'Es un ángulo común en geometría.'},
-        {question: '¿Cuál es el valor de √64?', answer: '8.', explanation: 'Es la raíz cuadrada de 64.'},
-        {question: '¿Qué es una función lineal?', answer: 'Una función cuya gráfica es una línea recta.', explanation: 'Ejemplo: y = mx + b.'},
-        {question: '¿Cuál es el factorial de 5?', answer: '120.', explanation: 'Se calcula como 5x4x3x2x1.'},
-        {question: '¿Qué es una fracción impropia?', answer: 'Una fracción cuyo numerador es mayor que el denominador.', explanation: 'Ejemplo: 7/4.'}
-    ],
-    'Ciencias Naturales': [
-        {question: '¿Qué gas es esencial para la respiración?', answer: 'El oxígeno.', explanation: 'Es utilizado por las células para obtener energía.'},
-        {question: '¿Qué planeta es conocido como el planeta rojo?', answer: 'Marte.', explanation: 'Se debe a la presencia de óxido de hierro en su superficie.'},
-        {question: '¿Cuál es la fuente principal de energía en la Tierra?', answer: 'El Sol.', explanation: 'Proporciona luz y calor.'},
-        {question: '¿Qué estudia la botánica?', answer: 'Las plantas.', explanation: 'Es una rama de la biología.'},
-        {question: '¿Qué es el ciclo del agua?', answer: 'El movimiento continuo del agua en la Tierra.', explanation: 'Incluye evaporación, condensación y precipitación.'},
-        {question: '¿Qué órgano controla el cuerpo humano?', answer: 'El cerebro.', explanation: 'Es el centro del sistema nervioso.'},
-        {question: '¿Qué metal es líquido a temperatura ambiente?', answer: 'El mercurio.', explanation: 'Es el único metal líquido a temperatura ambiente.'},
-        {question: '¿Qué es la fotosíntesis?', answer: 'Un proceso por el cual las plantas convierten luz en energía.', explanation: 'Utilizan dióxido de carbono y agua.'},
-        {question: '¿Qué es un ecosistema?', answer: 'Una comunidad de seres vivos y su entorno.', explanation: 'Incluye factores bióticos y abióticos.'},
-        {question: '¿Cuál es el estado del agua a 100°C?', answer: 'Gaseoso.', explanation: 'A esta temperatura el agua hierve y se convierte en vapor.'}
-    ],
-    'Tecnología': [
-        {question: '¿Qué significa "HTML"?', answer: 'HyperText Markup Language.', explanation: 'Es el lenguaje estándar para crear páginas web.'},
-        {question: '¿Qué es un algoritmo?', answer: 'Un conjunto de pasos para resolver un problema.', explanation: 'Es fundamental en programación.'},
-        {question: '¿Qué significa "IoT"?', answer: 'Internet of Things.', explanation: 'Se refiere a dispositivos conectados a internet.'},
-        {question: '¿Qué es la inteligencia artificial?', answer: 'La simulación de procesos humanos por máquinas.', explanation: 'Incluye aprendizaje, razonamiento y autocorrección.'},
-        {question: '¿Qué es un sistema operativo?', answer: 'Software que gestiona el hardware y software de una computadora.', explanation: 'Ejemplos: Windows, macOS, Linux.'},
-        {question: '¿Qué significa "CSS"?', answer: 'Cascading Style Sheets.', explanation: 'Se utiliza para diseñar páginas web.'},
-        {question: '¿Qué es un lenguaje de programación?', answer: 'Un lenguaje que permite escribir instrucciones para computadoras.', explanation: 'Ejemplos: Python, Java, C++.'},
-        {question: '¿Qué es el Big Data?', answer: 'Conjunto de datos masivos y complejos.', explanation: 'Requieren tecnologías especiales para su análisis.'},
-        {question: '¿Qué significa "HTTP"?', answer: 'Hypertext Transfer Protocol.', explanation: 'Es el protocolo usado para la comunicación en la web.'},
-        {question: '¿Qué es la nube informática?', answer: 'Almacenamiento y acceso a datos en internet.', explanation: 'Ejemplos: Google Drive, Dropbox.'}
-    ]
-}
-;
+            'Anatomía': [
+                {question: '¿Qué hueso conecta el hombro con el codo?', answer: 'El húmero.', explanation: 'Es un hueso largo del brazo.'},
+                {question: '¿Cuántas vértebras tiene la columna vertebral humana?', answer: '33 vértebras.', explanation: 'Divididas en cervicales, torácicas, lumbares, sacras y coccígeas.'},
+                // Añade más tarjetas hasta completar 10
+                {question: '¿Cuál es el hueso más grande del cuerpo humano?', answer: 'El fémur.', explanation: 'Es el hueso del muslo que conecta la cadera con la rodilla.'},
+                {question: '¿Dónde se encuentra el hioides?', answer: 'En el cuello.', explanation: 'Es un hueso pequeño en la base de la lengua.'},
+                {question: '¿Qué huesos forman el esqueleto axial?', answer: 'Cráneo, columna vertebral y caja torácica.', explanation: 'Soportan y protegen los órganos principales.'},
+                // ...
+            ],
+            'Fisiología': [
+                // Añade las flashcards correspondientes
+            ],
+            'Farmacología': [
+                // Añade las flashcards correspondientes
+            ],
+            'Microbiología': [
+                // Añade las flashcards correspondientes
+            ],
+            // Puedes agregar nuevos conjuntos aquí
+        };
 
         // Función para mostrar perfiles existentes
         function loadProfiles() {
@@ -401,7 +548,10 @@
                     let avatar = availableIcons.length > 0 ? availableIcons[0] : iconOptions[Math.floor(Math.random() * iconOptions.length)];
                     let progress = {};
                     for (let setName in flashcardSets) {
-                        progress[setName] = 0;
+                        progress[setName] = {
+                            totalReviewed: 0,
+                            currentIndex: 0
+                        };
                     }
                     let newProfile = {
                         username: username,
@@ -447,6 +597,11 @@
                 document.querySelector('.theme-toggle-button').style.display = 'block';
                 document.querySelector('.fullscreen-button').style.display = 'block';
                 document.getElementById('logout-button').style.display = 'none';
+            } else if (sectionId === 'review-level-section') {
+                document.querySelector('.back-button').style.display = 'block';
+                document.querySelector('.theme-toggle-button').style.display = 'none';
+                document.querySelector('.fullscreen-button').style.display = 'none';
+                document.getElementById('logout-button').style.display = 'none';
             } else {
                 document.getElementById('logout-button').style.display = 'none';
                 document.querySelector('.back-button').style.display = 'none';
@@ -460,17 +615,37 @@
             if (currentProfile) {
                 document.getElementById('avatar').className = currentProfile.avatar;
                 document.getElementById('username').innerText = currentProfile.username;
+
+                // Asegurar que el progreso tiene entradas para todos los conjuntos
+                for (let setName in flashcardSets) {
+                    if (!currentProfile.progress[setName]) {
+                        currentProfile.progress[setName] = {
+                            totalReviewed: 0,
+                            currentIndex: 0
+                        };
+                    }
+                }
+                // Actualizar el perfil en 'profiles' y guardar
+                let profileIndex = profiles.findIndex(profile => profile.username === currentProfile.username);
+                if (profileIndex !== -1) {
+                    profiles[profileIndex] = currentProfile;
+                    localStorage.setItem('profiles', JSON.stringify(profiles));
+                }
+
                 // Actualizar la lista de conjuntos
                 let setList = document.getElementById('set-list');
                 setList.innerHTML = '';
                 for (let setName in flashcardSets) {
+                    let totalReviewed = currentProfile.progress[setName]?.totalReviewed || 0;
+                    let totalCards = flashcardSets[setName].length;
                     let card = document.createElement('div');
                     card.className = 'set-card';
-                    card.onclick = () => selectSet(setName);
                     card.innerHTML = `
                         <i class="${getSetIcon(setName)}"></i>
                         <h3>${setName}</h3>
-                        <p id="progress-${setName}">${currentProfile.progress[setName] || 0}/${flashcardSets[setName].length} tarjetas revisadas</p>
+                        <p id="progress-${setName}">${totalReviewed}/${totalCards} tarjetas revisadas</p>
+                        <button onclick="selectSet('${setName}')"><i class="fas fa-book-open"></i> Estudiar</button>
+                        <button onclick="selectReviewLevel('${setName}')"><i class="fas fa-search"></i> Revisar Clasificadas</button>
                     `;
                     setList.appendChild(card);
                 }
@@ -500,31 +675,26 @@
                 localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
                 showSection('flashcard-section');
                 loadFlashcards();
-                if (theme === 'night') {
-                    document.body.classList.add('night-mode');
-                    document.querySelector('.theme-toggle-button i').classList.remove('fa-moon');
-                    document.querySelector('.theme-toggle-button i').classList.add('fa-sun');
-                } else {
-                    document.body.classList.remove('night-mode');
-                }
+                applyTheme();
+            }
+        }
+
+        // Función para seleccionar el nivel de revisión
+        function selectReviewLevel(setName) {
+            if (currentProfile) {
+                selectedSet = setName;
+                document.getElementById('review-set-name').innerText = setName;
+                showSection('review-level-section');
             }
         }
 
         // Función para revisar tarjetas clasificadas
         function reviewClassified(level) {
-            if (currentProfile) {
-                selectedSet = null;
+            if (currentProfile && selectedSet) {
                 reviewLevel = level;
-                localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
                 showSection('flashcard-section');
                 loadFlashcards();
-                if (theme === 'night') {
-                    document.body.classList.add('night-mode');
-                    document.querySelector('.theme-toggle-button i').classList.remove('fa-moon');
-                    document.querySelector('.theme-toggle-button i').classList.add('fa-sun');
-                } else {
-                    document.body.classList.remove('night-mode');
-                }
+                applyTheme();
             }
         }
 
@@ -532,8 +702,6 @@
         function logout() {
             localStorage.removeItem('currentProfile');
             currentProfile = null;
-            classifications = {};
-            localStorage.setItem('classifications', JSON.stringify(classifications));
             showSection('login-screen');
             loadProfiles();
         }
@@ -589,10 +757,19 @@
 
         // Cargar las flashcards
         function loadFlashcards() {
-            if (selectedSet) {
+            if (selectedSet && !reviewLevel) {
                 flashcards = flashcardSets[selectedSet];
-            } else {
-                // Revisar tarjetas clasificadas
+                currentCardIndex = currentProfile.progress[selectedSet]?.currentIndex || 0;
+            } else if (selectedSet && reviewLevel) {
+                // Revisar tarjetas clasificadas del conjunto seleccionado
+                flashcards = flashcardSets[selectedSet].map((card, index) => ({...card, setName: selectedSet, originalIndex: index}));
+                flashcards = flashcards.filter((card) => {
+                    let cardKey = `${selectedSet}-${card.originalIndex}-${currentProfile.username}`;
+                    return classifications[cardKey] === reviewLevel;
+                });
+                currentCardIndex = 0;
+            } else if (!selectedSet && reviewLevel) {
+                // Revisar tarjetas clasificadas de todos los conjuntos
                 flashcards = [];
                 for (let setName in flashcardSets) {
                     let setFlashcards = flashcardSets[setName].map((card, index) => ({...card, setName: setName, originalIndex: index}));
@@ -602,13 +779,13 @@
                     });
                     flashcards = flashcards.concat(setFlashcards);
                 }
+                currentCardIndex = 0;
             }
             if (flashcards.length === 0) {
                 alert('No hay tarjetas para mostrar.');
                 goBack();
                 return;
             }
-            currentCardIndex = 0;
             currentFace = 0;
             showFlashcard();
         }
@@ -659,6 +836,9 @@
             flashcard.addEventListener('touchmove', handleTouchMove, false);
             flashcard.addEventListener('touchend', handleTouchEnd, false);
 
+            // Añadir evento de clic para cambiar de cara
+            flashcard.addEventListener('click', () => flipCard('next'));
+
             return flashcard;
         }
 
@@ -669,8 +849,17 @@
             progressElement.style.width = progress + '%';
             // Actualizar progreso en el perfil
             if (currentProfile && selectedSet && !reviewLevel) {
-                currentProfile.progress[selectedSet] = Math.max(currentProfile.progress[selectedSet], currentCardIndex + 1);
+                currentProfile.progress[selectedSet] = {
+                    totalReviewed: Math.max(currentProfile.progress[selectedSet]?.totalReviewed || 0, currentCardIndex + 1),
+                    currentIndex: currentCardIndex
+                };
                 localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
+                // Actualizar el perfil en 'profiles' y guardar
+                let profileIndex = profiles.findIndex(profile => profile.username === currentProfile.username);
+                if (profileIndex !== -1) {
+                    profiles[profileIndex] = currentProfile;
+                    localStorage.setItem('profiles', JSON.stringify(profiles));
+                }
                 updateProfileUI();
             }
         }
@@ -726,6 +915,7 @@
             }
             currentFace = 0;
             showFlashcard();
+            updateProgress();
         }
 
         // Clasificar tarjeta
@@ -784,10 +974,30 @@
             localStorage.setItem('theme', theme);
         }
 
+        // Función para aplicar el tema al cargar
+        function applyTheme() {
+            if (theme === 'night') {
+                document.body.classList.add('night-mode');
+                document.querySelector('.theme-toggle-button i').classList.remove('fa-moon');
+                document.querySelector('.theme-toggle-button i').classList.add('fa-sun');
+            } else {
+                document.body.classList.remove('night-mode');
+                document.querySelector('.theme-toggle-button i').classList.remove('fa-sun');
+                document.querySelector('.theme-toggle-button i').classList.add('fa-moon');
+            }
+        }
+
         // Función para regresar y limpiar el nivel de revisión
         function goBack() {
-            reviewLevel = null;
-            showSection('main-section');
+            if (document.getElementById('flashcard-section').classList.contains('active')) {
+                reviewLevel = null;
+                selectedSet = null;
+                showSection('main-section');
+            } else if (document.getElementById('review-level-section').classList.contains('active')) {
+                showSection('main-section');
+            } else {
+                showSection('main-section');
+            }
         }
 
         // Inicialización
@@ -799,12 +1009,7 @@
                 showSection('login-screen');
                 loadProfiles();
             }
-            // Aplicar tema
-            if (theme === 'night') {
-                document.body.classList.add('night-mode');
-                document.querySelector('.theme-toggle-button i').classList.remove('fa-moon');
-                document.querySelector('.theme-toggle-button i').classList.add('fa-sun');
-            }
+            applyTheme();
         };
     </script>
 </body>
