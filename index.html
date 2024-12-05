@@ -201,23 +201,22 @@
         }
         /* Estilos de la lista de conjuntos */
         .set-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
-            padding-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
         .set-card {
             background-color: #fff;
             border-radius: 15px;
-            width: 220px;
             padding: 25px 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
-            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .set-card:hover {
             transform: translateY(-5px);
@@ -234,14 +233,22 @@
             font-weight: 500;
             color: #2C3E50;
             margin-bottom: 10px;
+            text-align: center;
         }
         .set-card p {
             margin: 5px 0;
             color: #7F8C8D;
             font-size: 16px;
+            text-align: center;
+        }
+        .set-card .button-group {
+            margin-top: auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .set-card button {
-            margin-top: 15px;
             padding: 10px 15px;
             background-color: #5DADE2;
             color: #fff;
@@ -260,7 +267,6 @@
             margin-right: 8px;
         }
         .set-card button + button {
-            margin-left: 10px;
             background-color: #1ABC9C;
         }
         .set-card button + button:hover {
@@ -272,6 +278,7 @@
             display: flex;
             gap: 20px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .classification-options button {
             padding: 12px 20px;
@@ -337,19 +344,14 @@
         }
         /* Contenedor de flashcards */
         .flashcard-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100%;
             height: 100%;
-            overflow: hidden;
             position: relative;
             padding: 0;
         }
         .flashcard {
-            width: 90vw;
-            height: 75vh;
-            max-width: 800px;
-            max-height: 600px;
+            width: 100%;
+            height: 100%;
             position: relative;
             perspective: 1000px;
         }
@@ -361,11 +363,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 15px;
+            border-radius: 0;
             padding: 30px;
             box-sizing: border-box;
             background: linear-gradient(to bottom, #fff, #f0f0f0);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: none;
             opacity: 0;
             z-index: 0;
             transition: opacity 0.4s ease;
@@ -403,6 +405,8 @@
             display: flex;
             gap: 15px;
             z-index: 2;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .classification button {
             padding: 14px 22px;
@@ -524,7 +528,7 @@
         }
         body.night-mode .card {
             background: linear-gradient(to bottom, #2C3E50, #1D1F21);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            box-shadow: none;
         }
         body.night-mode .card h2 {
             color: #fff;
@@ -590,13 +594,10 @@
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
             .profile-list, .set-list {
-                flex-direction: column;
-                align-items: center;
-                max-height: none;
-                overflow-y: visible;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
             .profile-card, .set-card {
-                width: 90%;
+                width: 100%;
             }
             .flashcard {
                 width: 100%;
